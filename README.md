@@ -2,5 +2,4 @@
 
 ![Didapper](didapper.jpg)
 
- * Shared Phylogenetic Likelihood ENgine Dreading Internal Duplication
- * SPeciation Likelihood Engine DIDapper
+`splendid` is a SPeciation Likelihood Engine with a DIDapper as a logo.
