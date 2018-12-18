@@ -2,4 +2,4 @@
 
 ![Didapper](didapper2.jpg)
 
-`splendid` is a SPeciation Likelihood Engine with a DIDapper as a logo.
+`splendid` is a SPeciation Likelihood Engine with a DIDapper logo.
