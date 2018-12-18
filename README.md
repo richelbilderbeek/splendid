@@ -1,4 +1,6 @@
 # splendid
 
+![Didapper](didapper.jpg)
+
  * Shared Phylogenetic Likelihood ENgine Dreading Internal Duplication
- * SPeciation Likelihood Engine DIDapper (didapper is a kind of bird, great for logo)
+ * SPeciation Likelihood Engine DIDapper
