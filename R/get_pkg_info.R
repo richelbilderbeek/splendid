@@ -5,7 +5,11 @@
 #' @return the conditionings
 #' @export
 get_conds <- function() {
- conds <- c(0, 1)
+ conds <- c(as.numeric(sub(
+  cond_functions(),
+  pattern = "cond_function_",
+  replacement = ""
+ )))
  conds
 }
 

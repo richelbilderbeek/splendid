@@ -11,7 +11,6 @@ sim <- function(
 ) {
 
   # check the parameters
-  check_input()
 
   good_sim <- 0
   while (!good_sim) {

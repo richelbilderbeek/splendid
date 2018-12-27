@@ -7,32 +7,33 @@
 #' @return nothing
 #' @export
 check_input <- function(
-  brts_m,
+  brts,
   cond,
   n_0,
   t_0
 ) {
-  if (length(brts_m) <= 0) {
-    stop("main clade branching times cannot be an empty vector")
+ if (is.list(brts)) {
+  for (i in 1:length(brts)) {
+   if (length(brts[[i]]) <= 0) {
+    err_message <- paste0(
+     "branching times for clade",
+     i,
+     "cannot be an empty vector"
+    )
+    stop(err_message)
+   } 
   }
-  if (length(brts_s) <= 0) {
-    stop("sub clade branching times cannot be an empty vector")
+ } else {
+  if (length(brts) <= 0) {
+   stop("branching times cannot be an empty vector")
   }
-  if (any(brts_m < 0)) {
-    stop("all the branching times for the main clade have to be non negative")
-  }
-  if (any(brts_s < 0)) {
-    stop("all the branching times for the sub clade have to be non negative")
-  }
-  if (!(cond %in% conds())) {
-   stop("this conditioning is not implemented")
-  }
-  if (!(n_0 %in% n_0s())) {
-   stop("this n_0 is not implemented")
-  }
-  if (n_max <= 0) {
-   stop("it's not going to work with maximum species set to 0 or less")
-  }
+ }
+ if (!(cond %in% conds())) {
+  stop("this conditioning is not implemented")
+ }
+ if (!(n_0 %in% n_0s())) {
+  stop("this n_0 is not implemented")
+ }
 }
 
 #' @title Get package name

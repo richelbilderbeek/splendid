@@ -4,15 +4,16 @@
 \alias{sim}
 \title{Simulate an sls process}
 \usage{
-sim(lambdas, mus, ks = c(Inf, Inf), cond = 1,
-  l_2 = sim_get_standard_l_2())
+sim(pars, cond = 1, l_2 = sim_get_standard_l_2())
 }
 \arguments{
-\item{lambdas}{speciation rates, for all the clades}
-
-\item{mus}{extinction rate, for all the clades}
-
-\item{ks}{carrying capacities, for all the clades}
+\item{pars}{parameters of the likelihood functions:
+\itemize{
+  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
+  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
+  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
+  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
+}}
 
 \item{cond}{type of conditioning:
 \itemize{
