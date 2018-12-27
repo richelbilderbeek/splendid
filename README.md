@@ -8,7 +8,7 @@ Branch|[![Travis CI logo](pics/TravisCI.png)](https://travis-ci.org)|[![AppVeyor
 `richel`|[![Build Status](https://travis-ci.org/richelbilderbeek/splendid.svg?branch=richel)](https://travis-ci.org/richelbilderbeek/splendid) |[![Build status](https://ci.appveyor.com/api/projects/status/o6htu70cv6ttqw5r/branch/richel?svg=true)](https://ci.appveyor.com/project/richelbilderbeek/splendid/branch/richel)| [![codecov.io](https://codecov.io/github/richelbilderbeek/splendid/coverage.svg?branch=richel)](https://codecov.io/github/richelbilderbeek/splendid?branch=richel)
 `pedro`|[![Build Status](https://travis-ci.org/richelbilderbeek/splendid.svg?branch=pedro)](https://travis-ci.org/richelbilderbeek/splendid) |[![Build status](https://ci.appveyor.com/api/projects/status/o6htu70cv6ttqw5r/branch/pedro?svg=true)](https://ci.appveyor.com/project/richelbilderbeek/splendid/branch/pedro)| [![codecov.io](https://codecov.io/github/richelbilderbeek/splendid/coverage.svg?branch=pedro)](https://codecov.io/github/richelbilderbeek/splendid?branch=pedro)
 
-![Didapper](didapper2.jpg)
+![Didapper](pics/didapper2.jpg)
 
 `splendid` is a SPeciation Likelihood Engine with a DIDapper logo.
 (N.B.: `splendid` is a provisional name)
@@ -22,4 +22,5 @@ The package is built in a fully modular fashion. In this way the user can build 
 - one (or more) conditioning function(s);
 - one (or more) simulation condition(s);
 - a function for any event that can occur in simulations;
+
 Once these functions are provided the user should be able to maximize the likelihood and infer the best parameters for any model.
