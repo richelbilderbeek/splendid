@@ -362,7 +362,7 @@ sim_conditioning <- function(
 ) {
 
  #check
- cond_check(
+ sim_cond_check(
   data = data,
   l_2 = l_2,
   cond = cond
