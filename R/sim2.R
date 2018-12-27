@@ -4,7 +4,7 @@
 #' @return l_1 table and brts
 #' @author Giovanni Laudanno
 #' @export
-sim2 <- function
+sim2 <- function(
  pars,
  cond = 1,
  l_2 = sim_get_standard_l_2()
@@ -26,13 +26,22 @@ sim2 <- function
     pars = pars,
     l_2 = l_2
    )
+   
+   # define events for the clade
+   events <- sim_events2(
+    data = data,
+    pars = pars,
+    l_2 = l_2,
+    clade = clade
+   )
    while (data$t[[clade]] > 0) {
     
-    # sample delta_n and delta_t
+    # sample delta_t
     delta_t <- sim_sample_delta_t(
      data = data,
      clade = clade,
-     pars = pars
+     pars = pars,
+     l_2 = l_2
     ); delta_t
     
     # simulate the event

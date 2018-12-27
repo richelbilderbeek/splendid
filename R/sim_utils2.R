@@ -4,22 +4,23 @@
 #' @inheritParams default_params_doc
 #' @return data for the clade
 #' @export
-sim_events <- function(
+sim_events2 <- function(
  data,
  pars,
  l_2,
- clade = 1
+ clade
 ) {
+ n_shifts <- sum(l_2$motherclade == clade)
  event_names <- c(
   "speciation",
   "extinction",
-  "shift",
+  paste0("shift_", 1:n_shifts),
   "end"
  )
  rate <- c(
   pars[[clade]][1],
   pars[[clade]][2],
-  0,
+  rep(0, n_shifts),
   0
  )
  time <- c(
@@ -28,22 +29,20 @@ sim_events <- function(
   l_2$birth_time[l_2$motherclade == clade],
   0
  )
- priority <- c(2, 2, 1, 1)
+ priority <- c(2, 2, rep(1, n_shifts) , 1)
  per_capita <- c(
   TRUE,
   TRUE,
-  FALSE,
+  rep(FALSE, n_shifts),
   FALSE
  )
- occurred <- rep(FALSE, length(priorities))
  total_rate <- length(data$pools[[clade]]) ^ per_capita * rates
  events <- rbind(
   rates,
   times,
   priorities,
   per_capita,
-  total_rate,
-  occurred
+  total_rate
  )
  colnames(events) <- event_names
  events <- data.frame(t(events))
@@ -62,12 +61,6 @@ sim_sample_delta_t <- function(
  pars,
  l_2
 ) {
- events <- sim_events(
-  data = data,
-  pars = pars,
-  l_2 = l_2,
-  clade = clade
- )
  l_1 <- data$l_1
  pools <- data$pools
  pool <- pools[[clade]]
@@ -102,14 +95,13 @@ sim_decide_event2 <- function(
  t <- data$t[[clade]]
  l_1 <- data$l_1
  l_0 <- l_1[[clade]]
- already_shifted <- any(l_0[, 5] > 0)
- tshifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
+ # already_shifted <- any(l_0[, 5] > 0)
+ # tshifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
  if (nrow(tshifts) > 1) {
   stop("Check the function if you want to implement more than 1 shift!")
  }
- p <- 0; event <- NULL
+ p <- 1; event <- NULL
  while (is.null(event)) {
-  p <- p + 1
   sub_events <- events[events$priorities == p, ]
   not_occurred_yet <- sub_events[sub_events$occurred == 0, ]
   earliest <- not_occurred_yet[
@@ -125,6 +117,7 @@ sim_decide_event2 <- function(
     events$occurred <- events$occurred + (rownames(events) == event)
    }
   }
+  p <- p + 1
  }
  testit::assert(!is.null(event))
  event
