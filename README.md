@@ -22,4 +22,5 @@ The package is built in a fully modular fashion. In this way the user can build 
 - one (or more) conditioning function(s);
 - one (or more) simulation condition(s);
 - a function for any event that can occur in simulations;
+
 Once these functions are provided the user should be able to maximize the likelihood and infer the best parameters for any model.
