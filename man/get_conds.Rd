@@ -2,15 +2,15 @@
 % Please edit documentation in R/get_pkg_info.R
 \name{get_conds}
 \alias{get_conds}
-\title{Conditionings}
+\title{Sim Conditionings}
 \usage{
 get_conds()
 }
 \value{
-the conditionings
+sim conditionings
 }
 \description{
-Gives the conditionings
+Gives sim conditionings
 }
 \author{
 Giovanni Laudanno
