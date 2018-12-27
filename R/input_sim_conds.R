@@ -1,12 +1,10 @@
-# SIMULATIONS
-
 #' @title Check if inputs for conditioning make sense
 #' @description Check if inputs for conditioning make sense
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return nothing
 #' @export
-cond_check <- function(
+sim_cond_check <- function(
  data,
  l_2,
  cond
@@ -19,41 +17,26 @@ cond_check <- function(
  }
 }
 
-#' @title Conditioning functions
-#' @description Conditioning functions
-#' @author Giovanni Laudanno
-#' @inheritParams default_params_doc
-#' @return the conditional functions
-#' @export
-cond_functions <- function() {
- fun_list <- ls(paste0("package:", get_pkg_name())) # nolint internal function
- cond_functions <- fun_list[sapply(
-  fun_list, function(x)
-   any(grepl("cond_function_", x))
- )]
- cond_functions
-}
-
-#' @title Conditioning 0
-#' @description Conditioning 0
+#' @title Sim conditioning 0
+#' @description Sim conditioning 0
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-cond_function_0 <- function(
+sim_cond_0 <- function(
  data,
  l_2
 ) {
  1
 }
 
-#' @title Conditioning 1
-#' @description Conditioning 1
+#' @title Sim conditioning 1
+#' @description Sim conditioning 1
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-cond_function_1 <- function(
+sim_cond_1 <- function(
  data,
  l_2
 ) {
@@ -123,18 +106,18 @@ cond_function_1 <- function(
    ) #S survives from s to p
   }
  }
-
+ 
  cond <- (surv_left_cp && surv_right_cs && surv_s)
  cond
 }
 
-#' @title Conditioning 2
-#' @description Conditioning 2
+#' @title Sim conditioning 2
+#' @description Sim conditioning 2
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-cond_function_2 <- function(
+sim_cond_2 <- function(
  data,
  l_2
 ) {
@@ -209,13 +192,13 @@ cond_function_2 <- function(
  cond
 }
 
-#' @title Conditioning 3
-#' @description Conditioning 3
+#' @title Sim conditioning 3
+#' @description Sim conditioning 3
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
 #' @return a boolean
 #' @export
-cond_function_3 <- function(
+sim_cond_3 <- function(
  data,
  l_2
 ) {
@@ -290,5 +273,3 @@ cond_function_3 <- function(
   (surv_left_cp && surv_right_cp)
  cond
 }
-
-# LOGLIKS

@@ -1,16 +1,31 @@
-#' @title Conditionings
+#' @title Sim Conditionings
 #' @author Giovanni Laudanno
-#' @description Gives the conditionings
+#' @description Gives sim conditionings
 #' @inheritParams default_params_doc
-#' @return the conditionings
+#' @return sim conditionings
 #' @export
 get_conds <- function() {
  conds <- c(as.numeric(sub(
   cond_functions(),
-  pattern = "cond_function_",
+  pattern = "sim_cond_",
   replacement = ""
  )))
  conds
+}
+
+#' @title Conditioning functions
+#' @description Conditioning functions
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return the conditional functions
+#' @export
+get_sim_conds <- function() {
+ fun_list <- ls(paste0("package:", get_pkg_name())) # nolint internal function
+ sim_conds <- fun_list[sapply(
+  fun_list, function(x)
+   any(grepl("sim_conds_", x))
+ )]
+ sim_conds
 }
 
 #' @title Starting species
