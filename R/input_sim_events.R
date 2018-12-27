@@ -28,7 +28,7 @@ sim_events <- function(
   l_2$birth_time[l_2$motherclade == clade],
   0
  )
- event_priorities <- c(3, 3, 1, 2)
+ event_priorities <- c(3, 3, 1, 1)
  events <- rbind(
   event_rates,
   event_times,
