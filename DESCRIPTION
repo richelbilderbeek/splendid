@@ -1,0 +1,22 @@
+Package: splendid
+Type: Package
+Title: Likelihood model for diversification processes with single lineage rate shifts
+Version: 0.1.0
+Author: Giovanni Laudanno
+Maintainer: Giovanni Laudanno <glaudanno@gmail.com>
+Description: Tools for phylogenetic likelihood modeling.
+License: GPL-3 | file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  testit,
+  rappdirs
+Suggests:
+  devtools,
+  ggplot2,
+  knitr,
+  lintr,
+  rmarkdown,
+  testthat
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
