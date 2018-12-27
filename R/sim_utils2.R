@@ -107,11 +107,11 @@ sim_decide_event2 <- function(
  if (nrow(tshifts) > 1) {
   stop("Check the function if you want to implement more than 1 shift!")
  }
- p <- 0; event <- NULL
+ p_level <- 0; event <- NULL
  while (is.null(event)) {
-  p <- p + 1
-  sub_events <- events[events$priorities == p, ]
-  not_occurred_yet <- sub_events[sub_events$occurred == 0, ]
+  p_level <- p_level + 1
+  p_level_events <- events[events$priorities == p_level, ]
+  not_occurred_yet <- p_level_events[p_level_events$occurred == 0, ]
   earliest <- not_occurred_yet[
    not_occurred_yet$times == max(not_occurred_yet$times) &
     t - delta_t < not_occurred_yet$times, ]
@@ -121,7 +121,7 @@ sim_decide_event2 <- function(
     size = 1,
     prob = earliest$total_rate
    )
-   if (p == 1) {
+   if (p_level == 1) {
     events$occurred <- events$occurred + (rownames(events) == event)
    }
   }
