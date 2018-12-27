@@ -124,9 +124,8 @@ sim_sample_deltas <- function(
  pools <- data$pools
  pool <- pools[[clade]]
 
- pars_0   <- pars[[clade]]
- lambda <- pars_0["lambda"]
- mu     <- pars_0["mu"]
+ lambda <- pars[[clade]]["lambda"]
+ mu     <- pars[[clade]]["mu"]
 
  n <- length(pool)
  total_rate <- n * (lambda + mu)
