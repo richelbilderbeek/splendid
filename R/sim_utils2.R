@@ -4,49 +4,95 @@
 #' @inheritParams default_params_doc
 #' @return data for the clade
 #' @export
-sim_events2 <- function(
+sim_clade_events <- function(
  data,
  pars,
  l_2,
- clade
-) {
- n_shifts <- sum(l_2$motherclade == clade)
- event_names <- c(
-  "speciation",
-  "extinction",
-  paste0("shift_", 1:n_shifts),
-  "end"
- )
- rate <- c(
-  pars[[clade]][1],
-  pars[[clade]][2],
-  rep(0, n_shifts),
-  0
- )
- time <- c(
-  max(l_2$birth_time),
-  max(l_2$birth_time),
-  l_2$birth_time[l_2$motherclade == clade],
-  0
- )
- priority <- c(2, 2, rep(1, n_shifts) , 1)
- per_capita <- c(
-  TRUE,
-  TRUE,
-  rep(FALSE, n_shifts),
-  FALSE
- )
- total_rate <- length(data$pools[[clade]]) ^ per_capita * rates
- events <- rbind(
-  rates,
-  times,
-  priorities,
-  per_capita,
-  total_rate
- )
- colnames(events) <- event_names
- events <- data.frame(t(events))
+ clade,
  events
+) {
+ if ("shift" %in% colnames(events)) {
+  n_shifts <- sum(l_2$motherclade == clade)
+  pippo <- colnames(events)
+  shift_coord <- which(pippo == "shift")
+  pippo_1 <- pippo[seq_along(pippo) < shift_coord]
+  pippo_2 <- pippo[seq_along(pippo) > shift_coord]
+  event_names <- c(
+   pippo_1,
+   paste0("shift_", 1:n_shifts),
+   pippo_2
+  )
+  events_1 <- events[pippo_1]
+  events_2 <- events[pippo_2]
+  events_11 <- matrix(
+   unlist(events_1),
+   nrow = nrow(events),
+   ncol = ncol(events_1)
+  )
+  events_22 <- matrix(
+   unlist(events_2),
+   nrow = nrow(events),
+   ncol = ncol(events_2)
+  )
+  priority_coord <- which(rownames(events_1) == "priority")
+  priority <- c(
+   events_11[priority_coord, ],
+   rep(1, n_shifts),
+   events_22[priority_coord, ]
+  )
+  per_capita_coord <- which(rownames(events_1) == "per_capita")
+  per_capita <- c(
+   events_11[per_capita_coord, ],
+   rep(FALSE, n_shifts),
+   events_22[per_capita_coord, ]
+  )
+ } else {
+  event_names <- colnames(events)
+  priority <- events[rownames(events) == "priority", ]
+  per_capita <- events[rownames(events) == "per_capita", ]
+ }
+ rate <- rate_names <- rep(NA, length(event_names))
+ for (i in seq_along(event_names)) {
+  if (priority[i] == 2) {
+   pippo <- events[event_names[i]]
+   rate_names[i] <- levels(droplevels(
+    pippo[which(rownames(pippo) == "rate_name"), ]
+   ))
+   rate[i] <- pars[[clade]][which(names(pars[[clade]]) == rate_names[i])]
+  }
+ }
+ names(rate) <- event_names
+ 
+ shift_times <- l_2$birth_time[l_2$motherclade == clade]
+ j <- 1
+ time <- rep(NA, length(event_names))
+ for (i in seq_along(event_names)) {
+  if (priority[i] == 1) {
+   if ("shift" == substr(event_names[i], 1, 5)) {
+    time[i] <- shift_times[j]
+    j <- j + 1
+   }
+   if ("end" %in% event_names[i]) {
+    time[i] <- 0
+   }
+  }
+  if (priority[i] == 2) {
+   time[i] <- max(l_2$birth_time)
+  }
+ }
+ total_rate <- length(data$pools[[clade]]) ^ (per_capita == TRUE) * rates
+ occurred <- rep(FALSE, length(per_capita))
+ clade_events <- rbind(
+  rate,
+  time,
+  priority,
+  per_capita,
+  total_rate,
+  occurred
+ )
+ colnames(clade_events) <- event_names
+ clade_events <- data.frame(t(clade_events))
+ clade_events
 }
 
 #' @title Sample deltas for Doob-Gillespie
@@ -65,6 +111,7 @@ sim_sample_delta_t <- function(
  pools <- data$pools
  pool <- pools[[clade]]
  pars_clade <- pars[[clade]]
+ events <- data$events[[clade]]
  
  # n <- length(pool)
  total_rate <- sum(events$total_rate)
@@ -95,8 +142,7 @@ sim_decide_event2 <- function(
  t <- data$t[[clade]]
  l_1 <- data$l_1
  l_0 <- l_1[[clade]]
- # already_shifted <- any(l_0[, 5] > 0)
- # tshifts <- sim_get_shifts_info(l_2 = l_2, clade = clade)
+ events <- data$events[[clade]]
  if (nrow(tshifts) > 1) {
   stop("Check the function if you want to implement more than 1 shift!")
  }
@@ -256,4 +302,88 @@ sim_event2 <- function(
   delta_t = delta_t
  ); output
  output
+}
+
+#' @title Initialize data for a new clade
+#' @description sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return data for the clade
+#' @export
+sim_initialize_data_new_clade2 <- function(
+ data,
+ clade,
+ pars,
+ l_2 = sim_get_standard_l_2(),
+ events
+) {
+ if (clade == 0) {
+  return(
+   list(
+    l_1 = vector("list", length(l_2$clade_id)),
+    pools = vector("list", length(l_2$clade_id)),
+    n_max = vector("list", length(l_2$clade_id)),
+    t = vector("list", length(l_2$clade_id))
+   )
+  )
+ }
+ 
+ clade_events <- sim_clade_events(
+  data = data,
+  pars = pars,
+  l_2 = l_2,
+  clade = clade,
+  events = events
+ )
+ 
+ l_matrix_size <- 1e2
+ l_1 <- data$l_1
+ n_0 <- sim_get_n_0(l_2 = l_2, clade = clade) # nolint internal function
+ t_0 <- sim_get_t_0(l_2 = l_2, clade = clade) # nolint internal function
+ motherclade <- sim_get_motherclade(l_2 = l_2, clade = clade) # nolint internal function
+ n_max <- n_0
+ 
+ cladeborn <- 1
+ if (clade > 1) {
+  l_mother <- l_1[[motherclade]]
+  motherspecies <- l_mother[l_mother[, 5] == clade, 3]
+  cladeborn <- length(motherspecies) != 0
+ }
+ 
+ if (cladeborn) {
+  t <- t_0
+  l_0 <- matrix(0, nrow = l_matrix_size, 5)
+  l_0[, 5] <- 0
+  l_0[, 4] <- -1
+  l_0[, 3] <- 0
+  l_0[1, 1:4] <- c(t, 0,  1, -1)
+  if (n_0 == 2) {
+   l_0[2, 1:4] <- c(t, 1, -2, -1)
+  }
+  if (clade > 1) {
+   l_0[1, 3] <- sign(motherspecies)
+  }
+  colnames(l_0) <- c(
+   "birth_time",
+   "parent",
+   "id",
+   "death_time",
+   "shifted_to"
+  )
+  pool <- l_0[1:n_0, 3]
+  data$l_1[[clade]] <- l_0
+  data$pools[[clade]] <- pool
+  data$n_max[[clade]] <- n_max
+  data$events[[clade]] <- clade_events
+ } else {
+  data$l_1[clade] <- list(NULL)
+  data$pools[clade] <- list(NULL)
+  data$n_max[clade] <- list(NULL)
+  data$events[clade] <- list(NULL)
+ }
+ 
+ data$t[[clade]] <- t_0
+ return(
+  data
+ )
 }

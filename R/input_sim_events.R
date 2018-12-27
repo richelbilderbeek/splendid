@@ -11,12 +11,19 @@ sim_events <- function() {
   "shift",
   "end"
  )
- event_priorities <- c(2, 2, 1, 1)
- event_rate_names <- c("lambda", "mu", "", "")
- events <- rbind(
-  event_priorities,
-  event_rate_names
+ priority <- c(2, 2, 1, 1)
+ rate_name <- c("lambda", "mu", "", "")
+ per_capita <- c(
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE
  )
+ events <- data.frame(rbind(
+  priority,
+  rate_name,
+  per_capita
+ ))
  colnames(events) <- event_names
  events
 }
