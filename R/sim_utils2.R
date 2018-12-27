@@ -22,8 +22,8 @@ sim_clade_events <- function(
    paste0("shift_", 1:n_shifts),
    pippo_2
   )
-  events_1 <- events[pippo_1]
-  events_2 <- events[pippo_2]
+  events_1 <- events[, pippo_1]
+  events_2 <- events[,pippo_2]
   events_11 <- matrix(
    unlist(events_1),
    nrow = nrow(events),
@@ -32,7 +32,9 @@ sim_clade_events <- function(
   events_22 <- matrix(
    unlist(events_2),
    nrow = nrow(events),
-   ncol = ncol(events_2)
+   ncol = length(events_2) # PN: is events_2 always a vector? If so, then this
+                           # bugfix works
+   
   )
   priority_coord <- which(rownames(events_1) == "priority")
   priority <- c(
@@ -48,7 +50,8 @@ sim_clade_events <- function(
   )
  } else {
   event_names <- colnames(events)
-  priority <- events[rownames(events) == "priority", ]
+  priority <- as.numeric(events[rownames(events) == "priority", ]) # PN: Made priority be numeric, before was string
+                                                                   # which didn't seem intended (also caused bug)
   per_capita <- events[rownames(events) == "per_capita", ]
  }
  rate <- rate_names <- rep(NA, length(event_names))
@@ -80,7 +83,7 @@ sim_clade_events <- function(
    time[i] <- max(l_2$birth_time)
   }
  }
- total_rate <- length(data$pools[[clade]]) ^ (per_capita == TRUE) * rates
+ total_rate <- length(data$pools[[clade]]) ^ (per_capita == TRUE) * rate # PN: still not working, but fixed name of rates to rate
  occurred <- rep(FALSE, length(per_capita))
  clade_events <- rbind(
   rate,
