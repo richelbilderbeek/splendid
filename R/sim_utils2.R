@@ -23,7 +23,7 @@ sim_clade_events <- function(
    pippo_2
   )
   events_1 <- events[, pippo_1]
-  events_2 <- events[,pippo_2]
+  events_2 <- events[, pippo_2]
   events_11 <- matrix(
    unlist(events_1),
    nrow = nrow(events),
@@ -149,10 +149,10 @@ sim_decide_event2 <- function(
  if (nrow(tshifts) > 1) {
   stop("Check the function if you want to implement more than 1 shift!")
  }
- p <- 1; event <- NULL
+ p_level <- 1; event <- NULL
  while (is.null(event)) {
-  sub_events <- events[events$priorities == p, ]
-  not_occurred_yet <- sub_events[sub_events$occurred == 0, ]
+  p_level_events <- events[events$priorities == p_level, ]
+  not_occurred_yet <- p_level_events[p_level_events$occurred == 0, ]
   earliest <- not_occurred_yet[
    not_occurred_yet$times == max(not_occurred_yet$times) &
     t - delta_t < not_occurred_yet$times, ]
@@ -162,11 +162,11 @@ sim_decide_event2 <- function(
     size = 1,
     prob = earliest$total_rate
    )
-   if (p == 1) {
+   if (p_level == 1) {
     events$occurred <- events$occurred + (rownames(events) == event)
    }
   }
-  p <- p + 1
+  p_level <- p_level + 1
  }
  testit::assert(!is.null(event))
  event
