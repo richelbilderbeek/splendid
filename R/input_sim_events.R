@@ -2,7 +2,7 @@
 #' @description sim module
 #' @author Giovanni Laudanno
 #' @inheritParams default_params_doc
-#' @return events that can happen in the phylogeny
+#' @return data for the clade
 #' @export
 sim_events <- function() {
  event_names <- c(
