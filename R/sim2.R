@@ -11,6 +11,10 @@ sim2 <- function
 ) {
  
  # check the parameters
+ # do it
+
+ # define model events
+ events <- sim_events()
  
  good_sim <- 0
  while (!good_sim) {
@@ -20,12 +24,15 @@ sim2 <- function
   for (clade in l_2$clade_id) {
    
    # initialize data for the clade
-   data <- sim_initialize_data_new_clade(
+   data <- sim_initialize_data_new_clade2(
     data = data,
     clade = clade,
     pars = pars,
-    l_2 = l_2
+
+    l_2 = l_2,
+    events = events
    )
+   
    while (data$t[[clade]] > 0) {
     
     # sample delta_n and delta_t

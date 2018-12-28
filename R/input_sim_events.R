@@ -4,36 +4,26 @@
 #' @inheritParams default_params_doc
 #' @return data for the clade
 #' @export
-sim_events <- function(
- data,
- pars,
- l_2,
- clade = 1
-) {
+sim_events <- function() {
  event_names <- c(
   "speciation",
   "extinction",
   "shift",
   "end"
  )
- event_rates <- c(
-  pars[[clade]][1],
-  pars[[clade]][2],
-  0,
-  0
+ priority <- c(2, 2, 1, 1)
+ rate_name <- c("lambda", "mu", "", "")
+ per_capita <- c(
+  TRUE,
+  TRUE,
+  FALSE,
+  FALSE
  )
- event_times <- c(
-  -1,
-  -1,
-  l_2$birth_time[l_2$motherclade == clade],
-  0
- )
- event_priorities <- c(3, 3, 1, 1)
- events <- rbind(
-  event_rates,
-  event_times,
-  event_priorities
- )
+ events <- data.frame(rbind(
+  priority,
+  rate_name,
+  per_capita
+ ))
  colnames(events) <- event_names
  events
 }
