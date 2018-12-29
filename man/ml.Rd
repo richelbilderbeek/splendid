@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml.R
 \name{ml}
 \alias{ml}
-\title{sls Maximum Likelihood}
+\title{Maximum Likelihood}
 \usage{
 ml(loglik_function = get_logliks(), brts, start_pars = c(0.5, 0.3, 0.5,
   0.3), n_0 = 2, cond = 1, verbose = TRUE, optim_ids = rep(TRUE,

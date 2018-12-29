@@ -1,22 +1,26 @@
-#' @title Run the full sls routine
-#' @description Simulate an sls process and infer parameters maximizing the
+#' @title Run the full routine
+#' @description Simulate a process and infer parameters maximizing the
 #' likelihood(s) for given function(s)
 #' @inheritParams default_params_doc
 #' @details mle inference
 #' @export
-sls_main <- function(
-  sim_pars,
-  cond = 1,
-  l_2 = sim_get_standard_l_2(
-    crown_age = 5,
-    shift_time = 2
-  ),
-  seed,
-  start_pars = c(0.2, 0.1, 0.2, 0.1),
-  optim_ids = rep(TRUE, length(start_pars)),
-  models = get_logliks(),
-  project_folder = NULL,
-  verbose = FALSE
+main <- function(
+ sim_pars = create_pars(
+  lambdas = c(0.2, 0.4),
+  mus = c(0.1, 0.05),
+  ks = c(Inf, Inf)
+ ),
+ cond = 1,
+ l_2 = sim_get_standard_l_2(
+  crown_age = 5,
+  shift_time = 2
+ ),
+ seed,
+ start_pars = sim_pars,
+ optim_ids = rep(TRUE, length(unlist(start_pars))),
+ models = get_logliks(),
+ project_folder = NULL,
+ verbose = FALSE
 ) {
   # specific set up
   lambdas <- sim_pars[c(1, 3)]
@@ -37,10 +41,8 @@ sls_main <- function(
 
   # simulate
   set.seed(seed)
-  sim <- sls_sim(
-    lambdas = lambdas,
-    mus = mus,
-    ks = ks,
+  sim <- sim(
+    pars = sim_pars,
     cond = cond,
     l_2 = l_2
   )
@@ -64,7 +66,7 @@ sls_main <- function(
         sink(rappdirs::user_cache_dir())
       }
     }
-    mle <- sls_ml(
+    mle <- ml(
       loglik_function = get(function_names[m]),
       brts = brts,
       cond = cond,

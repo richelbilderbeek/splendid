@@ -7,7 +7,7 @@
 get_logliks()
 }
 \value{
-the loglik function
+the loglik functions
 }
 \description{
 Gives the available loglik functions

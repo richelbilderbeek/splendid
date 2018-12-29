@@ -43,13 +43,13 @@ get_n_0s <- function() {
 #' @author Giovanni Laudanno
 #' @description Gives the available loglik functions
 #' @inheritParams default_params_doc
-#' @return the loglik function
+#' @return the loglik functions
 #' @export
 get_logliks <- function() {
  fun_list <- ls(paste0("package:", get_pkg_name())) # nolint internal function
  loglik_functions <- fun_list[sapply(
   fun_list, function(x)
-   any(grepl("loglik", x))
+   any(grepl("loglik", x)) & x != "get_logliks"
  )]
  loglik_functions
 }
@@ -58,5 +58,9 @@ get_logliks <- function() {
 #' @author Giovanni Laudanno
 #' @export
 get_param_names <- function() {
- c("lambda_m", "mu_m", "lambda_s", "mu_s")
+ c(
+  "lambda",
+  "mu",
+  "k"
+ )
 }

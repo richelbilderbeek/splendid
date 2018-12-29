@@ -4,7 +4,7 @@
 #' @inheritParams default_params_doc
 #' @return data for the clade
 #' @export
-sim_events <- function() {
+sim_model_events <- function() {
  event_names <- c(
   "speciation",
   "extinction",
@@ -19,11 +19,11 @@ sim_events <- function() {
   FALSE,
   FALSE
  )
- events <- data.frame(rbind(
+ model_events <- data.frame(rbind(
   priority,
   rate_name,
   per_capita
  ))
- colnames(events) <- event_names
- events
+ colnames(model_events) <- event_names
+ model_events
 }

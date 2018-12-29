@@ -4,23 +4,7 @@
 \alias{sim_events}
 \title{Events}
 \usage{
-sim_events(data, pars, l_2, clade = 1)
-}
-\arguments{
-\item{data}{contains all the information about the simulated process}
-
-\item{pars}{parameters of the likelihood functions:
-\itemize{
-  \item pars[1] is lambda_m, i.e. speciation rate of the main clade;
-  \item pars[2] is mu_m, i.e. extinction rate of the main clade;
-  \item pars[3] is lambda_s, i.e. speciation rate of the sub clade;
-  \item pars[4] is mu_s, i.e. extinction rate of the sub clade;
-}}
-
-\item{l_2}{the matrix containing the information about how the subclades are
-nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
-
-\item{clade}{the id of the clade}
+sim_events()
 }
 \value{
 data for the clade
