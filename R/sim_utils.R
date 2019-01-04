@@ -138,11 +138,18 @@ sim_clade_events <- function(
   shift_coord <- which(pippo == "shift")
   pippo_1 <- pippo[seq_along(pippo) < shift_coord]
   pippo_2 <- pippo[seq_along(pippo) > shift_coord]
-  event_names <- c(
-   pippo_1,
-   paste0("shift_", 1:n_shifts),
-   pippo_2
-  )
+  if (n_shifts > 0) {
+   event_names <- c(
+    pippo_1,
+    paste0("shift_", 1:n_shifts),
+    pippo_2
+   )
+  } else {
+   event_names <- c(
+    pippo_1,
+    pippo_2
+   )
+  }
   events_1 <- model_events[pippo_1]
   events_2 <- model_events[pippo_2]
   events_11 <- matrix(
@@ -161,6 +168,7 @@ sim_clade_events <- function(
    rep(1, n_shifts),
    events_22[priority_coord, ]
   )
+  priority <- as.numeric(priority)
   per_capita_coord <- which(rownames(events_1) == "per_capita")
   per_capita <- c(
    events_11[per_capita_coord, ],
@@ -170,6 +178,7 @@ sim_clade_events <- function(
  } else {
   event_names <- colnames(model_events)
   priority <- model_events[rownames(model_events) == "priority", ]
+  priority <- as.numeric(priority)
   per_capita <- model_events[rownames(model_events) == "per_capita", ]
  }
  rate <- rate_names <- rep(0, length(event_names))
