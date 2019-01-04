@@ -285,7 +285,7 @@ sim_decide_event <- function(
    ]
   if (nrow(earliest) > 0) {
    probability <- as.numeric(as.matrix(earliest$total_rate))
-   if (any(is.na(probability))) {
+   if (any(is.na(probability)) | any(probability == 0)) {
     probability <- rep(1, length(probability))
     if (p_level > 1) {
      print("there is a NA probability!")
