@@ -4,7 +4,7 @@
 \alias{sim_use_event}
 \title{Update data and time given the event}
 \usage{
-sim_use_event(data, clade, l_2, event, deltas)
+sim_use_event(data, clade, l_2, event, delta_t)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
@@ -16,9 +16,7 @@ nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
 \item{event}{the event occurring in the simulated process at a given time}
 
-\item{deltas}{in the Doob-Gillespie algorithm,
-the collection of delta_n and delta_t, which are, respectively,
-the change in number of species and
+\item{delta_t}{in the Doob-Gillespie algorithm,
 the waiting time for the next event to occur}
 }
 \value{

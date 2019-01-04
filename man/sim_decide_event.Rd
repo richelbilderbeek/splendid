@@ -4,16 +4,14 @@
 \alias{sim_decide_event}
 \title{Determines the event}
 \usage{
-sim_decide_event(data, clade, deltas, l_2)
+sim_decide_event(data, clade, delta_t, l_2)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
 
 \item{clade}{the id of the clade}
 
-\item{deltas}{in the Doob-Gillespie algorithm,
-the collection of delta_n and delta_t, which are, respectively,
-the change in number of species and
+\item{delta_t}{in the Doob-Gillespie algorithm,
 the waiting time for the next event to occur}
 
 \item{l_2}{the matrix containing the information about how the subclades are

@@ -1,5 +1,40 @@
 # MAIN COMPONENTS ----
 
+#' @title Creates the standard l_2
+#' @description sim module
+#' @author Giovanni Laudanno
+#' @inheritParams default_params_doc
+#' @return l_2
+#' @export
+sim_get_standard_l_2 <- function(
+ crown_age = 10,
+ n_0 = 2,
+ shift_time = 4
+) {
+ testit::assert(crown_age > shift_time)
+ l_2 <- as.data.frame(matrix(0, nrow = 2, ncol = 4))
+ l_2[, 1] <- c(0, shift_time)
+ l_2[, 2] <- c(0, 1)
+ l_2[, 3] <- c(1, 2)
+ l_2[, 4] <- c(n_0, 1)
+ l_2[1, 1] <- crown_age
+ colnames(l_2) <- c("birth_time", "motherclade", "clade_id", "n_0")
+ 
+ t_0s <- l_2[, 1]
+ motherclades <- l_2[, 2]
+ n_0s <- l_2[, 4]
+ testit::assert(
+  all(motherclades < seq(from = 1, to = length(motherclades)))
+ )
+ testit::assert(all(n_0s >= 1))
+ if (any(n_0s[-1] != 1)) {
+  stop("Every subclade should start with 1 species!")
+ }
+ testit::assert(all(t_0s > 0))
+ 
+ l_2
+}
+
 #' @title Initialize data for a new clade
 #' @description sim module
 #' @author Giovanni Laudanno

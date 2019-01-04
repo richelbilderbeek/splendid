@@ -4,7 +4,7 @@
 \alias{sim_event}
 \title{Apply the event to the simulation}
 \usage{
-sim_event(data, clade, l_2, deltas)
+sim_event(data, clade, l_2, delta_t)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
@@ -14,9 +14,7 @@ sim_event(data, clade, l_2, deltas)
 \item{l_2}{the matrix containing the information about how the subclades are
 nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 
-\item{deltas}{in the Doob-Gillespie algorithm,
-the collection of delta_n and delta_t, which are, respectively,
-the change in number of species and
+\item{delta_t}{in the Doob-Gillespie algorithm,
 the waiting time for the next event to occur}
 }
 \value{
