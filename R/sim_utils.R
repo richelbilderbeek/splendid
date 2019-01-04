@@ -217,7 +217,10 @@ sim_clade_events <- function(
   occurred
  )
  colnames(clade_events) <- event_names
- clade_events <- data.frame(t(clade_events))
+ clade_events <- data.frame(
+  t(clade_events),
+  stringsAsFactors = FALSE
+ )
  clade_events
 }
 
@@ -238,13 +241,8 @@ sim_sample_delta_t <- function(
  pool <- pools[[clade]]
  pars_clade <- pars[[clade]]
  events <- data$events[[clade]]
- 
- # n <- length(pool)
- total_rate <- sum(
-  as.numeric(levels(droplevels(
-   events$total_rate
-  )))
- )
+
+ total_rate <- sum(as.numeric(events$total_rate), na.rm = TRUE)
  testit::assert(total_rate >= 0)
  if (total_rate > 0) {
   delta_t <- (total_rate > 0) *
@@ -273,7 +271,7 @@ sim_decide_event <- function(
  l_1 <- data$l_1
  l_0 <- l_1[[clade]]
  events <- data$events[[clade]]
- if (nrow(tshifts) > 1) {
+ if (nrow(l_2) > 2) {
   stop("Check the function if you want to implement more than 1 shift!")
  }
  p_level <- 1; event <- NULL
@@ -391,6 +389,11 @@ sim_use_event <- function(
   temp_matrix[rownames(temp_matrix) == event, "occurred"] <- "TRUE"
  }
  data$events[[clade]] <- as.data.frame(temp_matrix)
+ 
+ # update total rates
+ total_rates <- rep(length(data$pools[[clade]]), length(data$events[[clade]]$per_capita)) ^ as.numeric(data$events[[clade]]$per_capita) * 
+  data$events[[clade]]$rate
+ data$events[[clade]]$total_rate <- total_rates
  
  # store output
  t <- unname(t)

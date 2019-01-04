@@ -11,7 +11,7 @@ sim <- function(
 ) {
  
  # check the parameters
- # do it
+ set.seed(1)
 
  # define model events
  model_events <- sim_model_events()
