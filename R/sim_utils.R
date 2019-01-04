@@ -325,7 +325,7 @@ sim_use_event <- function(
  n_max <- data$n_max[[clade]]
  shifted <- 0
  
- if (event == "shift") {
+ if (grepl("shift", event)) {
   where <- shifts$where
   t <- shifts$when #time becomes the shift point
   if (n > 1) {
