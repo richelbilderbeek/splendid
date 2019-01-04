@@ -23,7 +23,7 @@ sim_model_events <- function() {
   priority,
   rate_name,
   per_capita
- ))
+ ), stringsAsFactors = FALSE)
  colnames(model_events) <- event_names
  model_events
 }

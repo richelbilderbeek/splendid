@@ -176,9 +176,7 @@ sim_clade_events <- function(
  for (i in seq_along(event_names)) {
   if (priority[i] == 2) {
    pippo <- model_events[event_names[i]]
-   rate_names[i] <- levels(droplevels(
-    pippo[which(rownames(pippo) == "rate_name"), ]
-   ))
+   rate_names[i] <- pippo[which(rownames(pippo) == "rate_name"), ]
    rate[i] <- pars[[clade]][
     which(
      grepl(
