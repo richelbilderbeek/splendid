@@ -172,7 +172,7 @@ sim_clade_events <- function(
   priority <- model_events[rownames(model_events) == "priority", ]
   per_capita <- model_events[rownames(model_events) == "per_capita", ]
  }
- rate <- rate_names <- rep(NA, length(event_names))
+ rate <- rate_names <- rep(0, length(event_names))
  for (i in seq_along(event_names)) {
   if (priority[i] == 2) {
    pippo <- model_events[event_names[i]]
@@ -388,11 +388,15 @@ sim_use_event <- function(
  if (temp_matrix[rownames(temp_matrix) == event, "priority"] == "1") {
   temp_matrix[rownames(temp_matrix) == event, "occurred"] <- "TRUE"
  }
- data$events[[clade]] <- as.data.frame(temp_matrix)
+ data$events[[clade]] <- as.data.frame(
+  temp_matrix,
+  stringsAsFactors = FALSE
+ )
  
  # update total rates
- total_rates <- rep(length(data$pools[[clade]]), length(data$events[[clade]]$per_capita)) ^ as.numeric(data$events[[clade]]$per_capita) * 
-  data$events[[clade]]$rate
+ total_rates <- rep(length(data$pools[[clade]]), length(data$events[[clade]]$per_capita)) ^ 
+  as.numeric(as.logical(data$events[[clade]]$per_capita)) * 
+  as.numeric(data$events[[clade]]$rate)
  data$events[[clade]]$total_rate <- total_rates
  
  # store output
