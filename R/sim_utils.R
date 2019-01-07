@@ -134,24 +134,24 @@ sim_clade_events <- function(
 ) {
  if ("shift" %in% colnames(model_events)) {
   n_shifts <- sum(l_2$motherclade == clade)
-  pippo <- colnames(model_events)
-  shift_coord <- which(pippo == "shift")
-  pippo_1 <- pippo[seq_along(pippo) < shift_coord]
-  pippo_2 <- pippo[seq_along(pippo) > shift_coord]
+  unedited_event_names <- colnames(model_events)
+  shift_coord <- which(unedited_event_names == "shift")
+  no_shift_events <- unedited_event_names[seq_along(unedited_event_names) < shift_coord]
+  shift_events <- unedited_event_names[seq_along(unedited_event_names) > shift_coord]
   if (n_shifts > 0) {
    event_names <- c(
-    pippo_1,
+    no_shift_events,
     paste0("shift_", 1:n_shifts),
-    pippo_2
+    shift_events
    )
   } else {
    event_names <- c(
-    pippo_1,
-    pippo_2
+    no_shift_events,
+    shift_events
    )
   }
-  events_1 <- model_events[pippo_1]
-  events_2 <- model_events[pippo_2]
+  events_1 <- model_events[no_shift_events]
+  events_2 <- model_events[shift_events]
   events_11 <- matrix(
    unlist(events_1),
    nrow = nrow(model_events),
@@ -184,8 +184,8 @@ sim_clade_events <- function(
  rate <- rate_names <- rep(0, length(event_names))
  for (i in seq_along(event_names)) {
   if (priority[i] == 2) {
-   pippo <- model_events[event_names[i]]
-   rate_names[i] <- pippo[which(rownames(pippo) == "rate_name"), ]
+   event <- model_events[event_names[i]]
+   rate_names[i] <- event[which(rownames(event) == "rate_name"), ]
    rate[i] <- pars[[clade]][
     which(
      grepl(
