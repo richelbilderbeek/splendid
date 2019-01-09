@@ -20,7 +20,7 @@ test_that("use", {
   seed_interval <- 6:(6 + 5 * is_on_ci())
   for (seed in seed_interval) {
     # seed = 6 is critical!
-    test <- sls_main(
+    test <- main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
@@ -187,13 +187,13 @@ test_that("use", {
   # test silent mode and character entry for "models" input
   seed <- 99
   testthat::expect_silent(
-    test <- sls_main(
+    test <- main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,
       l_2 = l_2,
       start_pars = c(0.2, 0.1, 0.2, 0.1),
-      models = "loglik_sls_p",
+      models = get_logliks()[1],
       optim_ids = optim_ids,
       verbose = FALSE
     )
@@ -249,7 +249,7 @@ test_that("it works also for a subset of parameters", {
   models <- get_logliks()
   optim_ids <- c(TRUE, FALSE, FALSE, FALSE)
 
-  test <- sls_main(
+  test <- main(
     seed = seed,
     sim_pars = sim_pars,
     cond = cond,
@@ -323,7 +323,7 @@ test_that("abuse", {
   sim_pars <- c(0.3, 0.2, 0.6, 0.1)
   cond <- 3
   testthat::expect_error(
-    sls_main(
+    main(
       seed = seed,
       sim_pars = sim_pars,
       cond = cond,

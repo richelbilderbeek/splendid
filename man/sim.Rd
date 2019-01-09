@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim.R
 \name{sim}
 \alias{sim}
-\title{Simulate an sls process}
+\title{Simulate a process}
 \usage{
 sim(pars, cond = 1, l_2 = sim_get_standard_l_2())
 }
@@ -33,7 +33,7 @@ nested into the main clade. See sls_sim.get_standard_l_2() for more info.}
 l_1 table and brts
 }
 \description{
-Simulate an sls process
+Simulate a process
 }
 \author{
 Giovanni Laudanno

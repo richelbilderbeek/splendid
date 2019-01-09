@@ -1,4 +1,4 @@
-#' @title sls Maximum Likelihood
+#' @title Maximum Likelihood
 #' @description Calculates maximum likelihood
 #' @inheritParams default_params_doc
 #' @return best parameters

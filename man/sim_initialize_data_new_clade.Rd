@@ -4,7 +4,8 @@
 \alias{sim_initialize_data_new_clade}
 \title{Initialize data for a new clade}
 \usage{
-sim_initialize_data_new_clade(data, clade, pars, l_2 = sim_get_standard_l_2())
+sim_initialize_data_new_clade(data, clade, pars, l_2 = sim_get_standard_l_2(),
+  model_events)
 }
 \arguments{
 \item{data}{contains all the information about the simulated process}
