@@ -1,10 +1,10 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Demo"
+author: "Richel J.C. Bilderbeek"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Demo}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,4 +13,228 @@ vignette: >
 library(splendid)
 ```
 
-Stuff
+`splendid` is a SPeciation Likelihood Engine with a DIDapper logo.
+(N.B.: `splendid` is a provisional name)
+
+The project is run by G. Laudanno, R.J.C. Bilderbeek and P.M. Santos Neves.
+
+# Goal
+
+Our goal is to make easier to build R packages for likelihood models in macroevolution.
+
+The package is built in a fully modular fashion. In this way the user can build a likelihood package providing:
+- one (or more) loglik function(s);
+- one (or more) conditioning function(s);
+- one (or more) simulation condition(s);
+- a function for any event that can occur in simulations;
+
+Once these functions are provided the user should be able to maximize the likelihood and infer the best parameters for any model.
+
+# Use case: birth-death model
+
+First, we'll show how to use `splendid` on a known model: the standard
+birth-death model.
+
+This model has two parameters:
+
+ * a birth rate, commonly denoted by $\lambda$
+ * an extinction rate, commonly denoted by $\mu$
+
+## Simulating a birth-death phylogeny
+
+In this use case, we will use:
+
+ * speciation rate $\lambda = 1.0$
+ * extinction rate $\mu = 0.1$
+
+Or in R:
+
+```{r}
+speciation_rate <- 1.0
+extinction_rate <- 0.1
+```
+
+When simulating a phylogeny, a user needs to specify:
+
+ * when to stop
+ * an RNG seed
+
+In this use case, we'll:
+
+ * stop when the phylogeny has twenty taxa
+ * restart when the phylogeny has zero taxa
+ * an RNG seed of 314
+
+Or in R:
+
+```{r}
+#' Determine when a phylogeny simulation must stop
+#' @return TRUE if the simulation needs to stop
+stop_if_phylogeny <- function(phylogeny) { ape::Ntip(phylogeny) == 20 }
+
+#' Determine when a phylogeny simulation must restart
+#' @return TRUE if the simulation needs to be restarted
+restart_if_phylogeny <- function(phylogeny) { ape::Ntip(phylogeny) == 0 }
+
+rng_seed <- 314
+```
+ 
+How the model works, needs to be specified by a model expert:
+
+ * how a first phylogeny is set up (`sim_initialize_data_new_clade`)
+ * how event rates are determined (`sim_sample_deltas`)
+ * what happens at such an event (`sim_event`)
+
+In this use case:
+
+ * the first phylogeny is a crown: two taxa that just split 
+ * there are two events, thus two rates:
+   * specation event rate: $\lamda$ 
+   * extinction event rate: simply $\lamda$ 
+ * there are two events:
+   * a speciaton event: a random node speciates
+   * an extintion event: a random node stops
+
+Or in R:
+
+```{r}
+#' Create a first starting phylogeny
+#' @return a function that creates a phylogeny
+create_first_phylogy <- function() { 
+ ape::read.tree(text = "(A,B);")
+}
+
+#' Calcualate the rates at which all events happen
+#' @param phylogeny a phylogeny
+#' @param parameters the model's parameters
+#' @return a list of events. 
+#'   Each element is an event. 
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+calc_event_rates <- function(phylogeny, parameters) {
+  list(
+    list(name = "speciation", rate = ape::Ntip(phylogeny) * parameters$lambda),
+    list(name = "extinction", rate = ape::Ntip(phylogeny) * parameters$mu)
+  )
+}
+
+#' Create the phylogeny after an event took place
+#' @param phylogeny a phylogeny
+#' @param event one event, as created by \link{calc_event_rates}.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+#' @return the phylogeny after the event has taken place
+process_events <- function(phylogeny, event) {
+  if (event$name == "speciation") {
+     # Add node to phylogeny
+  } else {
+     testit::assert(event$name == "extinction")
+     # Remove node from phylogeny
+  }
+  phylogeny 
+}
+```
+
+Using these functions, `splendid` can simulate a birth-death phylogeny:
+
+```
+#' Simulate a macroevolutionary speciation process
+#' @param stop_if_phylogeny function that determines 
+#'   when a phylogeny simulation must stop. 
+#'   The function must have a \code{phylogeny} as an argument,
+#'   and return TRUE or FALSE
+#' @param restart_if_phylogeny function that determines 
+#'   when a phylogeny simulation must restart 
+#'   The function must have a \code{phylogeny} as an argument,
+#'   and return TRUE or FALSE
+#' @param rng_seed a RNG seed
+#' @param create_first_phylogy a function to create a first starting
+#'   phylogeny. 
+#'   The function must have a \code{parameters} as an argument,
+#'   and return a phylogeny
+#' @param calc_event_rates function to calculate the rates at which events happen
+#'   The function must have \code{phylogeny} and \code{parameters} as argument,
+#'   and return a list of events.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+#' @pparam process_events function to create a phylogeny after an event took place
+#'   The function must have \code{phylogeny} and \code{event} as argument,
+#'   and return the new phylogeny.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+phylogeny <- splendid::sim(
+  stop_if_phylogeny = stop_if_phylogeny,
+  restart_if_phylogeny = restart_if_phylogeny, 
+  create_first_phylogy = create_first_phylogy,
+  calc_event_rates = calc_event_rates,
+  process_events = process_events,
+  rng_seed = rng_seed
+)
+```
+
+One of the goals of `splendid` is to generalize the simulation a phylogeny.
+Although simulating a birth-death process can be done in usually simpler ways,
+we are more flexible than ever. And the function can be used to
+run newer models, like the SLS model.
+
+## Simulating an SLS phylogeny
+
+To simulate an SLS phylogeny, 
+
+```{r}
+#' Create a first starting phylogeny
+#' @return a function that creates a phylogeny
+create_first_phylogy <- function() { 
+ # Something with sim_initialize_data_new_clade
+}
+
+#' Calcualate the rates at which all events happen
+#' @param phylogeny a phylogeny
+#' @param parameters the model's parameters
+#' @return a list of events. 
+#'   Each element is an event. 
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+calc_event_rates <- function(phylogeny, parameters) {
+  # Something with sim_sample_deltas
+}
+
+#' Create the phylogeny after an event took place
+#' @param phylogeny a phylogeny
+#' @param event one event, as created by \link{calc_event_rates}.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+#' @return the phylogeny after the event has taken place
+process_events <- function(phylogeny, event) {
+  # Something with sim_event
+}
+```
+
+Using these functions, `splendid` can simulate an SLS phylogeny:
+
+```
+#' Simulate a macroevolutionary speciation process
+#' @param stop_if_phylogeny function that determines 
+#'   when a phylogeny simulation must stop. 
+#'   The function must have a \code{phylogeny} as an argument,
+#'   and return TRUE or FALSE
+#' @param restart_if_phylogeny function that determines 
+#'   when a phylogeny simulation must restart 
+#'   The function must have a \code{phylogeny} as an argument,
+#'   and return TRUE or FALSE
+#' @param rng_seed a RNG seed
+#' @param create_first_phylogy a function to create a first starting
+#'   phylogeny. 
+#'   The function must have a \code{parameters} as an argument,
+#'   and return a phylogeny
+#' @param calc_event_rates function to calculate the rates at which events happen
+#'   The function must have \code{phylogeny} and \code{parameters} as argument,
+#'   and return a list of events.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+#' @pparam process_events function to create a phylogeny after an event took place
+#'   The function must have \code{phylogeny} and \code{event} as argument,
+#'   and return the new phylogeny.
+#'   An event has a name (\code{name}) and a rate (\code{rate})
+phylogeny <- splendid::sim(
+  stop_if_phylogeny = stop_if_phylogeny,
+  restart_if_phylogeny = restart_if_phylogeny, 
+  create_first_phylogy = create_first_phylogy,
+  calc_event_rates = calc_event_rates,
+  process_events = process_events,
+  rng_seed = rng_seed
+)
+```
