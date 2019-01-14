@@ -4,8 +4,8 @@
 \alias{main}
 \title{Run the full routine}
 \usage{
-main(sim_pars = create_pars(lambdas = c(0.2, 0.4), mus = c(0.1, 0.05), ks =
-  c(Inf, Inf)), cond = 1, l_2 = sim_get_standard_l_2(crown_age = 5,
+main(sim_pars = create_pars(lambdas = c(0.2, 0.4), mus = c(0.1, 0.05), ks
+  = c(Inf, Inf)), cond = 1, l_2 = sim_get_standard_l_2(crown_age = 5,
   shift_time = 2), seed, start_pars = sim_pars, optim_ids = rep(TRUE,
   length(unlist(start_pars))), models = get_logliks(),
   project_folder = NULL, verbose = FALSE)

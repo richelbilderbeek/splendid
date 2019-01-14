@@ -210,7 +210,7 @@ sim_clade_events <- function(
    }
   }
   if (priority[i] == 2) {
-   time[i] <- max(l_2$birth_time)
+   time[i] <- max(l_2$birth_time[clade])
   }
  }
  total_rate <- length(data$pools[[clade]]) ^ (per_capita == TRUE) * rate # PN: still not working, but fixed name of rates to rate
